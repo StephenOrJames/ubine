@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}Locate a Room | {% endblock %}
+{% block content %}
+    <h2>Locate a Room</h2>
+
+    <p>
+        The Ellicott Complex is a group of residence halls at the University at Buffalo, and is made up of six quadrangles.
+        Each quadrangle is comprised of at least six buildings each, and each building can have up to ten floors.
+        How, then, can one easily locate a room, given only the quadrangle and the room number?
+        UBinE is here to help!
+    </p>
+
+    <form action="{% url "locate:index" %}" method="get">
+        <fieldset>
+            <legend>Locate a Room</legend>
+            <label>
+                Quadrangle
+                <select name="quadrangle" required="required">
+                    <option value="" selected="selected" disabled="disabled">Select a Quadrangle</option>
+                    {% for quad_id, quad_name in quadrangles %}
+                        <option value="{{ quad_id }}">{{ quad_name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                Room number
+                <input type="number" name="room" required="required" placeholder="Room number">
+            </label>
+            <button type="submit">Search</button>
+        </fieldset>
+    </form>
+
+    {% if building %}
+        <p>
+            The room {{ quadrangle_name }} {{ room }} is in building {{ building }} on floor {{ floor }}.
+        </p>
+    {% elif quadrangle or room %}
+        <p>We could not find your search query.</p>
+    {% endif %}
+
+    {% if quadrangle %}
+        <section>
+            <h3>Quadrangle details</h3>
+
+            <figure id="locate-quad">
+                {% with "locate/img/"|add:quadrangle|add:".jpg" as image_url %}
+                    <img alt="{{ quadrangle_name }}" src="{% static image_url %}">
+                {% endwith %}
+                <figcaption>
+                    * The image above was created by and belongs to UB Campus Living.
+                </figcaption>
+            </figure>
+
+            The <a href="https://www.buffalo.edu/buildings/building?id={{ quadrangle }}">
+            {{ quadrangle_name }} Quadrangle</a> has elevators in:
+
+            {% if quadrangle == "fargo" %}
+                {% include "locate/info/fargo.html" %}
+            {% elif quadrangle == "porter" %}
+                {% include "locate/info/porter.html" %}
+            {% elif quadrangle == "red_jacket" %}
+                {% include "locate/info/red_jacket.html" %}
+            {% elif quadrangle == "richmond" %}
+                {% include "locate/info/richmond.html" %}
+            {% elif quadrangle == "spaulding" %}
+                {% include "locate/info/spaulding.html" %}
+            {% elif quadrangle == "wilkeson" %}
+                {% include "locate/info/wilkeson.html" %}
+            {% endif %}
+
+            <div style="clear: both"></div>
+        </section>
+    {% endif %}
+{% endblock %}
