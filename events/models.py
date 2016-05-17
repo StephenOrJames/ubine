@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from django.core.mail import send_mail
 from django.db import models
+from django.utils.crypto import get_random_string
 from django.utils.timezone import localtime
 
 
@@ -18,6 +20,9 @@ class Event(models.Model):
 
     # Who?
     # TODO: contacts/organizers
+
+    # Notifications
+    # subscribers = models.ManyToManyField("Subscription")
 
     def __str__(self):
         return "%(title)s (%(time)s)" % {
@@ -45,3 +50,76 @@ class Event(models.Model):
         else:
             duration = "%(start_date)s at %(start_time)s"
         return duration % dt
+
+    def save(self, *args, **kwargs):
+        subscribers = Subscriber.objects.filter(opted_in=True)
+        for subscriber in subscribers.all():
+            send_mail(
+                "Event on UBinE: %s" % self.title,
+                self.description,
+                "events@ubine.ml",
+                [subscriber.email_address]
+            )
+        super().save(*args, **kwargs)
+
+
+class Subscriber(models.Model):
+    """A subscriber is one who subscribes to events.
+
+    Attributes:
+        email_address: The email address of the subscriber.
+        email_confirmed: If the subscriber has confirmed his/her email address.
+        code: The last assigned confirmation/unsubscription code.
+    """
+
+    CODE_LENGTH = 25
+
+    email_address = models.EmailField(unique=True)
+    opted_in = models.BooleanField(default=False)
+    code = models.CharField(max_length=CODE_LENGTH, unique=True)
+    # code_updated = models.DateTimeField()  # TODO: update doc when enabled
+
+    # TODO: add a way to allow users to limit their subscription
+
+    def __str__(self):
+        return self.email_address
+
+    @classmethod
+    def create(cls, email_address):
+        subscriber = cls(email_address=email_address)
+        subscriber.save()
+        if subscriber.code:
+            return send_mail(
+                "UBinE Events Subscription Confirmation",
+                subscriber.code,
+                "events@ubine.ml",
+                [subscriber.email_address]
+            )
+        return False
+
+    def opt_in(self):
+        if not self.opted_in:
+            self.opted_in = True
+            self.save()
+            return True
+        return False
+
+    def opt_out(self):
+        if self.opted_in:
+            self.opted_in = False
+            self.generate_code()
+            self.save()
+            return True
+        return False
+
+    def generate_code(self):
+        while True:
+            code = get_random_string(length=Subscriber.CODE_LENGTH)
+            if not Subscriber.objects.filter(code=code).exists():
+                self.code = code
+                return
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.generate_code()
+        super().save(*args, **kwargs)
