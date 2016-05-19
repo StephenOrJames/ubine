@@ -9,7 +9,7 @@ from django.utils.timezone import localtime
 class Event(models.Model):
     # What?
     title = models.CharField(max_length=50)
-    description = models.TextField(max_length=500)
+    description = models.TextField(max_length=5000)
 
     # Where?
     location = models.CharField(max_length=50)
@@ -22,7 +22,7 @@ class Event(models.Model):
     # TODO: contacts/organizers
 
     # Notifications
-    # subscribers = models.ManyToManyField("Subscription")
+    # subscribers = models.ManyToManyField("Subscriber")
 
     def __str__(self):
         return "%(title)s (%(time)s)" % {
@@ -61,6 +61,9 @@ class Event(models.Model):
                 [subscriber.email_address]
             )
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["-start_time", "-end_time"]
 
 
 class Subscriber(models.Model):
