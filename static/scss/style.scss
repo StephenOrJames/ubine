@@ -1,0 +1,52 @@
+$baird-point: rgb(255, 255, 255);
+$putnam-gray: rgb(102, 102, 102);
+$ub-blue: rgb(0, 91, 187);
+
+$shadow: rgba(0, 0, 0, .5);
+
+header {
+  background-color: $ub-blue;
+  box-shadow: 0 0 3px 3px $shadow;
+
+  a {
+    color: $baird-point;
+  }
+  a:focus,
+  a:hover {
+    color: $baird-point;
+    text-shadow: 3px 3px 3px $shadow;
+  }
+}
+
+main {
+  background-color: $baird-point;
+
+  .button {
+    background-color: $ub-blue;
+    color: $baird-point;
+  }
+  .button:focus,
+  .button:hover {
+    background-color: darken($ub-blue, 5%);
+  }
+
+  #locate-quad {
+    margin: 0;
+
+    figcaption {
+      font-size: smaller;
+    }
+
+    img {
+      height: 250px;
+      width: 200px;
+    }
+  }
+}
+
+footer {
+  border-top: 1px solid darken($baird-point, 20.8%);
+  color: $shadow;
+  font-size: smaller;
+  font-style: italic;
+}

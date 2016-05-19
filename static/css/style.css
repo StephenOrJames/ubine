@@ -1,0 +1,33 @@
+header {
+  background-color: #005bbb;
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.5); }
+  header a {
+    color: white; }
+  header a:focus,
+  header a:hover {
+    color: white;
+    text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5); }
+
+main {
+  background-color: white; }
+  main .button {
+    background-color: #005bbb;
+    color: white; }
+  main .button:focus,
+  main .button:hover {
+    background-color: #004fa2; }
+  main #locate-quad {
+    margin: 0; }
+    main #locate-quad figcaption {
+      font-size: smaller; }
+    main #locate-quad img {
+      height: 250px;
+      width: 200px; }
+
+footer {
+  border-top: 1px solid #cacaca;
+  color: rgba(0, 0, 0, 0.5);
+  font-size: smaller;
+  font-style: italic; }
+
+/*# sourceMappingURL=style.css.map */

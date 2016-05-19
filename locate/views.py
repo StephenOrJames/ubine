@@ -4,8 +4,8 @@ from locate.rooms import get_building
 
 
 def index(request):
+    form = SearchForm(request.GET)
     if request.GET.get("quadrangle") and request.GET.get("room"):
-        form = SearchForm(request.GET)
         if form.is_valid():
             quadrangle = form.cleaned_data["quadrangle"]
             room = form.cleaned_data["room"]
@@ -19,7 +19,6 @@ def index(request):
                 "building": building,
                 "floor": room // 100,
             })
-    form = SearchForm()
     return render(request, "locate/locate.html", {
         "form": form,
         "quadrangles": SearchForm.QUADRANGLES,
