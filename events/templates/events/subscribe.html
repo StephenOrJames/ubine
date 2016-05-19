@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% block title %}Subscribe to Events | {% endblock %}
 {% block content %}
     <form action="{% url "events:subscribe" %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button>Subscribe</button>
+        <fieldset class="fieldset">
+            <legend>Subscribe to Events</legend>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button expanded">Subscribe</button>
+        </fieldset>
     </form>
 {% endblock %}

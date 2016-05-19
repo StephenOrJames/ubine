@@ -12,9 +12,9 @@
     </p>
 
     <form action="{% url "locate:index" %}" method="get">
-        <fieldset>
+        <fieldset class="fieldset">
             <legend>Locate a Room</legend>
-            <label>
+            <label class="medium-6 columns">
                 Quadrangle
                 <select name="quadrangle" required="required">
                     <option value="" selected="selected" disabled="disabled">Select a Quadrangle</option>
@@ -23,53 +23,55 @@
                     {% endfor %}
                 </select>
             </label>
-            <label>
+            <label class="medium-6 columns">
                 Room number
                 <input type="number" name="room" required="required" placeholder="Room number">
             </label>
-            <button type="submit">Search</button>
+            <button class="button expanded">Search</button>
         </fieldset>
     </form>
 
     {% if building %}
-        <p>
+        <p class="callout success">
             The room {{ quadrangle_name }} {{ room }} is in building {{ building }} on floor {{ floor }}.
         </p>
     {% elif quadrangle or room %}
-        <p>We could not find your search query.</p>
+        <p class="callout alert">We could not find your search query.</p>
     {% endif %}
 
     {% if quadrangle %}
-        <section>
-            <h3>Quadrangle details</h3>
+        <section class="callout">
+            <h3>About the {{ quadrangle_name }} Quadrangle</h3>
 
-            <figure id="locate-quad">
-                {% with "locate/img/"|add:quadrangle|add:".jpg" as image_url %}
-                    <img alt="{{ quadrangle_name }}" src="{% static image_url %}">
-                {% endwith %}
-                <figcaption>
-                    * The image above was created by and belongs to UB Campus Living.
-                </figcaption>
-            </figure>
+            <div class="row">
+                <div class="medium-9 columns">
+                    The <a href="https://www.buffalo.edu/buildings/building?id={{ quadrangle }}">
+                    {{ quadrangle_name }} Quadrangle</a> has elevators in:
 
-            The <a href="https://www.buffalo.edu/buildings/building?id={{ quadrangle }}">
-            {{ quadrangle_name }} Quadrangle</a> has elevators in:
+                    {% if quadrangle == "fargo" %}
+                        {% include "locate/info/fargo.html" %}
+                    {% elif quadrangle == "porter" %}
+                        {% include "locate/info/porter.html" %}
+                    {% elif quadrangle == "red_jacket" %}
+                        {% include "locate/info/red_jacket.html" %}
+                    {% elif quadrangle == "richmond" %}
+                        {% include "locate/info/richmond.html" %}
+                    {% elif quadrangle == "spaulding" %}
+                        {% include "locate/info/spaulding.html" %}
+                    {% elif quadrangle == "wilkeson" %}
+                        {% include "locate/info/wilkeson.html" %}
+                    {% endif %}
+                </div>
 
-            {% if quadrangle == "fargo" %}
-                {% include "locate/info/fargo.html" %}
-            {% elif quadrangle == "porter" %}
-                {% include "locate/info/porter.html" %}
-            {% elif quadrangle == "red_jacket" %}
-                {% include "locate/info/red_jacket.html" %}
-            {% elif quadrangle == "richmond" %}
-                {% include "locate/info/richmond.html" %}
-            {% elif quadrangle == "spaulding" %}
-                {% include "locate/info/spaulding.html" %}
-            {% elif quadrangle == "wilkeson" %}
-                {% include "locate/info/wilkeson.html" %}
-            {% endif %}
-
-            <div style="clear: both"></div>
+                <figure id="locate-quad" class="medium-3 columns">
+                    {% with "locate/img/"|add:quadrangle|add:".jpg" as image_url %}
+                        <img alt="{{ quadrangle_name }}" src="{% static image_url %}">
+                    {% endwith %}
+                    <figcaption>
+                        * The image above was created by and belongs to UB Campus Living.
+                    </figcaption>
+                </figure>
+            </div>
         </section>
     {% endif %}
 {% endblock %}

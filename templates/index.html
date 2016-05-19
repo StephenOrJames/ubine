@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block content %}
+    <h2>Welcome to UBinE!</h2>
+
+    <div class="medium-6 columns">
+        <a href="{% url "events:index" %}" class="button expanded">Find Events</a>
+    </div>
+    <div class="medium-6 columns">
+        <a href="{% url "locate:index" %}" class="button expanded">Locate Rooms</a>
+    </div>
+{% endblock %}

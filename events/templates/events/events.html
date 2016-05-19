@@ -1,40 +1,66 @@
 {% extends "base.html" %}
+
+{% load staticfiles %}
+
 {% block title %}Events | {% endblock %}
+
 {% block content %}
+    <h2>Events</h2>
+
     <form action="{% url "events:index" %}" method="get">
-        <fieldset>
+        <fieldset class="fieldset">
             <legend>Filter Results</legend>
-            <label>
+            <label class="medium-6 large-3 columns">
                 ID
                 <input type="number" name="id" value="{{ query.id }}">
             </label>
-            <label>
+            <label class="medium-6 large-3 columns">
                 Title
                 <input type="text" name="title" value="{{ query.title }}">
             </label>
-            <label>
+            <label class="medium-6 large-3 columns">
                 Events after
                 <input type="datetime-local" name="after" class="search-date"
                        placeholder="YYYY-MM-DD" data-date-format="yyyy-mm-dd" value="{{ query.after }}">
             </label>
-            <label>
+            <label class="medium-6 large-3 columns">
                 Events before
                 <input type="datetime-local" name="before" class="search-date"
                        placeholder="YYYY-MM-DD" data-date-format="yyyy-mm-dd" value="{{ query.before }}">
             </label>
-            <button>Search</button>
+            <button class="button expanded">Search</button>
         </fieldset>
     </form>
 
     {% if events %}
         {% for event in events %}
-            <section>
+            <section class="callout">
                 <h3>{{ event.title }}</h3>
                 <p class="events-duration">{{ event.duration }}</p>
                 <p class="events-description">{{ event.description }}</p>
             </section>
         {% endfor %}
     {% else %}
-        <p>There are no events that match your search query.</p>
+        <p class="callout alert">There are no events that match your search query.</p>
     {% endif %}
+{% endblock %}
+
+{% block extra_stylesheets %}
+    <link rel="stylesheet" href="{% static "foundation-icons/foundation-icons.css" %}">
+    <link rel="stylesheet" href="{% static "css/foundation-datepicker.min.css" %}">
+    <style>
+        .datepicker td.active.day {
+            background-color: rgb(0, 91, 187);
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block extra_javascript %}
+    <script src="{% static "js/foundation-datepicker.min.js" %}"></script>
+    <script>
+        $(function() {
+            $(".search-date").fdatepicker();
+        })
+    </script>
 {% endblock %}
