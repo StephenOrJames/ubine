@@ -1,10 +1,15 @@
 from datetime import datetime
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.template.loader import get_template
 from django.utils.crypto import get_random_string
 from django.utils.timezone import localtime
 
+
+EMAIL_SENDER = "UBinE Events <events@ubine.ml>"
 
 class Event(models.Model):
     # What?
@@ -57,7 +62,7 @@ class Event(models.Model):
             send_mail(
                 "Event on UBinE: %s" % self.title,
                 self.description,
-                "events@ubine.ml",
+                EMAIL_SENDER,
                 [subscriber.email_address]
             )
         super().save(*args, **kwargs)
@@ -87,32 +92,62 @@ class Subscriber(models.Model):
     def __str__(self):
         return self.email_address
 
+    @staticmethod
+    def build_url(request, view, code):
+        return request.build_absolute_uri(
+            reverse("events:%s" % view, args=(code,))
+        )
+
     @classmethod
-    def create(cls, email_address):
-        subscriber = cls(email_address=email_address)
-        subscriber.save()
-        if subscriber.code:
+    def create(cls, email_address, request):
+        if not Subscriber.objects.filter(email_address=email_address).exists():
+            subscriber = cls(email_address=email_address)
+            subscriber.save()
+            if subscriber.code:
+                body_text = get_template("events/emails/subscribe_confirm.txt")
+                context = {
+                    "url": Subscriber.build_url(request, "subscribe", subscriber.code)
+                }
+                return send_mail(
+                    "UBinE Events Subscription Confirmation",
+                    body_text.render(context),
+                    EMAIL_SENDER,
+                    [subscriber.email_address]
+                )
+        return False
+
+    def opt_in(self, request):
+        if not self.opted_in:
+            self.opted_in = True
+            self.generate_code()
+            self.save()
+            body_text = get_template("events/emails/subscribe_confirmed.txt")
+            context = {
+                "url": Subscriber.build_url(request, "unsubscribe", self.code)
+            }
             return send_mail(
                 "UBinE Events Subscription Confirmation",
-                subscriber.code,
-                "events@ubine.ml",
-                [subscriber.email_address]
+                body_text.render(context),
+                EMAIL_SENDER,
+                [self.email_address]
             )
         return False
 
-    def opt_in(self):
-        if not self.opted_in:
-            self.opted_in = True
-            self.save()
-            return True
-        return False
-
-    def opt_out(self):
+    def opt_out(self, request):
         if self.opted_in:
             self.opted_in = False
             self.generate_code()
             self.save()
-            return True
+            body_text = get_template("events/emails/unsubscribed.txt")
+            context = {
+                "url": Subscriber.build_url(request, "subscribe", self.code)
+            }
+            return send_mail(
+                "UBinE Events Unsubscription Confirmation",
+                body_text.render(context),
+                EMAIL_SENDER,
+                [self.email_address]
+            )
         return False
 
     def generate_code(self):

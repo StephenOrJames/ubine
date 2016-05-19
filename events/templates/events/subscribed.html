@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Subscribe to Events | {% endblock %}
+{% block content %}
+    <h2>Subscribe to Events</h2>
+
+    {% if unsubscribe %}
+        <p class="callout success">
+            You are now subscribed to UBinE Events notifications.
+            You may click <a href="{% url "events:unsubscribe" unsubscribe %}">here</a> to unsubscribe.
+        </p>
+    {% else %}
+        <p class="callout alert">
+            There was an issue confirming your subscription.
+            Please verify that your code is correct.
+            If it is, then you may have already been subscribed.
+        </p>
+    {% endif %}
+{% endblock %}
