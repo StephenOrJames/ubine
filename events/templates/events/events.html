@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% load markdown_deux_tags %}
 {% load staticfiles %}
 
 {% block title %}Events | {% endblock %}
@@ -32,12 +33,16 @@
         </fieldset>
     </form>
 
+    <div class="text-center">
+        <a href="{% url "events:subscribe" %}" class="button secondary hollow">Subscribe to All Events Posted on UBinE</a>
+    </div>
+
     {% if events %}
         {% for event in events %}
             <section class="callout">
                 <h3>{{ event.title }}</h3>
                 <p class="events-duration">{{ event.duration }}</p>
-                <p class="events-description">{{ event.description }}</p>
+                <p class="events-description">{{ event.description|markdown }}</p>
             </section>
         {% endfor %}
     {% else %}

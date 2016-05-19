@@ -30,6 +30,11 @@ main {
     background-color: darken($ub-blue, 5%);
   }
 
+  .events-duration {
+    font-style: italic;
+    padding-left: 2em;
+  }
+
   #locate-quad {
     margin: 0;
 

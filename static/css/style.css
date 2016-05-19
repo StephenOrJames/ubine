@@ -16,6 +16,9 @@ main {
   main .button:focus,
   main .button:hover {
     background-color: #004fa2; }
+  main .events-duration {
+    font-style: italic;
+    padding-left: 2em; }
   main #locate-quad {
     margin: 0; }
     main #locate-quad figcaption {

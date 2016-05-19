@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Subscribe to Events | {% endblock %}
 {% block content %}
+    <h2>Subscribe to Events</h2>
+
     <form action="{% url "events:subscribe" %}" method="post">
         <fieldset class="fieldset">
             <legend>Subscribe to Events</legend>
+
+            <p>
+                UBinE will notify you whenever an event is posted or modified.
+                <em>You will be required to verify your email address, but you may unsubscribe at any time.</em>
+            </p>
+
             {% csrf_token %}
             {{ form.as_p }}
             <button class="button expanded">Subscribe</button>
